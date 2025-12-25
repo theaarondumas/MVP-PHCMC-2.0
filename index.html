@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0c10" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="styles.css" />
+  <title>UnitFlow</title>
+</head>
+
+<body>
+  <header class="top">
+    <div>
+      <h1>UnitFlow</h1>
+      <p class="sub">PHI-free ops tools • Supply Log + Crash Cart Mode • Select → Export/Print</p>
+    </div>
+    <button id="installBtn" class="btn ghost" hidden type="button">Install</button>
+  </header>
+
+  <main class="wrap">
+
+    <!-- HOME -->
+    <section id="screen-home" class="card screen active">
+      <h2>Choose a tool</h2>
+      <p class="sub">Pick a mode. Your data stays on this device (LocalStorage).</p>
+
+      <div class="homegrid">
+        <button id="goSupply" class="tile" type="button">
+          <div class="tile-title">Supply Log</div>
+          <div class="tile-sub">Quick PHI-free supply notes • Today + Week • Export</div>
+        </button>
+
+        <button id="goCrash" class="tile" type="button">
+          <div class="tile-title">Crash Cart Mode</div>
+          <div class="tile-sub">Exception-based cart log • Adult / Neonatal / Broselow</div>
+        </button>
+      </div>
+
+      <hr class="line" />
+
+      <div class="actions">
+        <button id="purgeBtn" class="btn danger" type="button">Clear All Logs (This Device)</button>
+      </div>
+      <p class="sub">Tip: iPhone PDF = Print → pinch/zoom preview → Share → Save to Files.</p>
+    </section>
+
+    <!-- SUPPLY MODE -->
+    <section id="screen-supply" class="card screen">
+      <div class="screenhead">
+        <button id="backFromSupply" class="btn ghost" type="button">← Home</button>
+        <div>
+          <h2>Supply Log</h2>
+          <p class="sub">PHI-free quick log • Today + Week • Select → Export/Print</p>
+        </div>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Supply Tabs">
+        <button class="tab active" data-tab="supply-today" type="button">Today</button>
+        <button class="tab" data-tab="supply-week" type="button">Week</button>
+        <button class="tab" data-tab="supply-new" type="button">New Log</button>
+      </div>
+
+      <!-- SUPPLY TODAY -->
+      <div id="tab-supply-today" class="tabpane active">
+        <div class="row">
+          <h3>Today</h3>
+          <span id="supplyTodayCount" class="pill">0 entries</span>
+        </div>
+        <div class="actions">
+          <button id="selectSupplyTodayBtn" class="btn" type="button">Select Items</button>
+          <button id="exportSupplyCsvAll" class="btn" type="button">Export ALL CSV</button>
+          <button id="printSupplyAll" class="btn" type="button">Print / PDF (ALL)</button>
+        </div>
+        <div id="supplyTodayList" class="list"></div>
+      </div>
+
+      <!-- SUPPLY WEEK -->
+      <div id="tab-supply-week" class="tabpane">
+        <div class="row">
+          <h3>This Week</h3>
+          <span id="supplyWeekCount" class="pill">0 entries</span>
+        </div>
+        <div class="actions">
+          <button id="selectSupplyWeekBtn" class="btn" type="button">Select Items</button>
+          <button id="exportSupplyCsvAll2" class="btn" type="button">Export ALL CSV</button>
+          <button id="printSupplyAll2" class="btn" type="button">Print / PDF (ALL)</button>
+        </div>
+        <div id="supplyWeekList" class="list"></div>
+      </div>
+
+      <!-- SUPPLY NEW -->
+      <div id="tab-supply-new" class="tabpane">
+        <h3>New Supply Log Entry</h3>
+
+        <div class="grid">
+          <label class="field">
+            <span>Your Name (optional)</span>
+            <input id="s_author" maxlength="40" placeholder="e.g., Aaron" />
+          </label>
+
+          <label class="field">
+            <span>Shift (optional)</span>
+            <select id="s_shift">
+              <option value="">—</option>
+              <option>Day</option>
+              <option>PM</option>
+              <option>Night</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Unit/Area (optional)</span>
+            <input id="s_unit" maxlength="30" placeholder="e.g., Med/Surg" />
+          </label>
+
+          <label class="field">
+            <span>Supply Type</span>
+            <select id="s_type">
+              <option>Replenishment</option>
+              <option>Stockout</option>
+              <option>Missing Item</option>
+              <option>Damage</option>
+              <option>Delivery</option>
+              <option>Other</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Severity</span>
+            <select id="s_severity">
+              <option>Low</option>
+              <option>Medium</option>
+              <option>High</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Quantity (optional)</span>
+            <input id="s_qty" type="number" min="0" max="9999" inputmode="numeric" placeholder="0" />
+          </label>
+
+          <label class="field full">
+            <span>Notes (PHI-free, keep generic)</span>
+            <textarea id="s_notes" maxlength="180" placeholder="Example: ‘Missing IV start kits on cart 3’ (no patient details)."></textarea>
+          </label>
+        </div>
+
+        <div class="warn" id="s_phiWarn" hidden>
+          Heads up: keep entries PHI-free (no names, DOB, MRN, room #).
+        </div>
+
+        <div class="actions">
+          <button id="s_saveBtn" class="btn primary" type="button">Save Entry</button>
+          <button id="s_clearBtn" class="btn ghost" type="button">Clear</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- CRASH CART MODE -->
+    <section id="screen-crash" class="card screen">
+      <div class="screenhead">
+        <button id="backFromCrash" class="btn ghost" type="button">← Home</button>
+        <div>
+          <h2>Crash Cart Mode</h2>
+          <p class="sub">Exception-based logging • Seal + Expirations • Export/Print</p>
+        </div>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Crash Tabs">
+        <button class="tab crashTab active" data-tab="crash-today" type="button">Today</button>
+        <button class="tab crashTab" data-tab="crash-week" type="button">Week</button>
+        <button class="tab crashTab" data-tab="crash-new" type="button">New Cart Log</button>
+      </div>
+
+      <!-- CRASH TODAY -->
+      <div id="tab-crash-today" class="tabpane active">
+        <div class="row">
+          <h3>Today</h3>
+          <span id="crashTodayCount" class="pill">0 entries</span>
+        </div>
+
+        <div id="crashAlerts" class="alerts" hidden></div>
+
+        <div class="actions">
+          <button id="selectCrashTodayBtn" class="btn" type="button">Select Items</button>
+          <button id="exportCrashCsvAll" class="btn" type="button">Export ALL CSV</button>
+          <button id="printCrashAll" class="btn" type="button">Print / PDF (ALL)</button>
+        </div>
+
+        <div id="crashTodayList" class="list"></div>
+      </div>
+
+      <!-- CRASH WEEK -->
+      <div id="tab-crash-week" class="tabpane">
+        <div class="row">
+          <h3>This Week</h3>
+          <span id="crashWeekCount" class="pill">0 entries</span>
+        </div>
+
+        <div class="actions">
+          <button id="selectCrashWeekBtn" class="btn" type="button">Select Items</button>
+          <button id="exportCrashCsvAll2" class="btn" type="button">Export ALL CSV</button>
+          <button id="printCrashAll2" class="btn" type="button">Print / PDF (ALL)</button>
+        </div>
+
+        <div id="crashWeekList" class="list"></div>
+      </div>
+
+      <!-- CRASH NEW -->
+      <div id="tab-crash-new" class="tabpane">
+        <h3>New Crash Cart Entry</h3>
+
+        <div class="grid">
+          <label class="field">
+            <span>Cart Type</span>
+            <select id="c_cartType">
+              <option>Adult</option>
+              <option>Neonatal</option>
+              <option>Broselow</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Location</span>
+            <select id="c_location"></select>
+          </label>
+
+          <label class="field">
+            <span>Cart #</span>
+            <input id="c_cartNumber" maxlength="12" placeholder="e.g., 16" />
+          </label>
+
+          <label class="field">
+            <span>Reason for Log</span>
+            <select id="c_reason">
+              <option>After use (code event)</option>
+              <option>Routine reseal (seal broken)</option>
+              <option>Expiration swap</option>
+              <option>Missing / replaced item</option>
+              <option>Other</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Checked By</span>
+            <input id="c_checkedBy" maxlength="40" placeholder="Name or initials" />
+          </label>
+
+          <label class="field">
+            <span>Seal # Applied (optional)</span>
+            <input id="c_seal" maxlength="20" placeholder="e.g., CC-45821" />
+          </label>
+
+          <label class="field">
+            <span>Central Supply Exp (Old) (optional)</span>
+            <input id="c_centralOld" type="date" />
+          </label>
+
+          <label class="field">
+            <span>Central Supply Exp (New)</span>
+            <input id="c_centralNew" type="date" />
+          </label>
+
+          <label class="field">
+            <span>Med Box Exp (Old) (optional)</span>
+            <input id="c_medOld" type="date" />
+          </label>
+
+          <label class="field">
+            <span>Med Box Exp (New)</span>
+            <input id="c_medNew" type="date" />
+          </label>
+
+          <label class="field full">
+            <span>Items Replaced / Notes (optional, PHI-free)</span>
+            <textarea id="c_notes" maxlength="180" placeholder="Short, generic note (no patient info)."></textarea>
+          </label>
+        </div>
+
+        <div class="warn" id="c_hint" hidden>
+          Tip: For non-expiration reasons, you can leave expiration fields blank.
+        </div>
+
+        <div class="actions">
+          <button id="c_saveBtn" class="btn primary" type="button">Save Cart Log</button>
+          <button id="c_clearBtn" class="btn ghost" type="button">Clear</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SELECTION ACTION BAR (shared for both modes) -->
+    <div id="actionBar" class="actionbar" hidden>
+      <div class="actionbar-left">
+        <span id="selectedCount" class="pill">0 selected</span>
+      </div>
+      <div class="actionbar-right">
+        <button id="cancelSelectBtn" class="btn ghost" type="button">Cancel</button>
+        <button id="viewSelectedBtn" class="btn" type="button">View Table</button>
+        <button id="printSelectedBtn" class="btn" type="button">Print Selected</button>
+        <button id="exportSelectedBtn" class="btn primary" type="button">Export Selected</button>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
