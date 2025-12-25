@@ -799,3 +799,16 @@ function wireSelectionBar() {
   setTabWithin(screens.supply, "supply-today");
   setTabWithin(screens.crash, "crash-today");
 })();
+
+// Absolute safety: never show selection bar on Home
+const homeObserver = new MutationObserver(() => {
+  const homeVisible = screens.home.classList.contains("active");
+  if (homeVisible) {
+    $("actionBar").hidden = true;
+    document.body.classList.remove("selecting");
+    selectMode = false;
+    selectedIds.clear();
+  }
+});
+
+homeObserver.observe(document.body, { attributes: true, subtree: true });
